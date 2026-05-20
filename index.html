@@ -499,5 +499,119 @@
              nav.classList.add('bg-transparent');
         }
     </script>
+
+    <!-- Mini Game UI (彩蛋進度條) -->
+    <div id="game-ui" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-dark-card/90 backdrop-blur-md border border-brand/50 p-4 rounded-2xl shadow-[0_0_30px_rgba(39,181,168,0.3)] z-[100] w-[90%] max-w-sm transition-all duration-500 opacity-0 pointer-events-none translate-y-8 scale-95">
+        <div class="flex justify-between items-end text-xs font-bold text-gray-300 mb-2 uppercase tracking-widest">
+            <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Energy Level
+            </span>
+            <span id="game-progress-text" class="text-brand text-sm">0%</span>
+        </div>
+        <div class="h-2.5 w-full bg-black/50 rounded-full overflow-hidden shadow-inner">
+            <div id="game-progress-bar" class="h-full bg-brand transition-all duration-300 ease-out w-0 relative">
+                <!-- 進度條光暈特效 -->
+                <div class="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/50 blur-[2px]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入煙火特效庫 (Canvas Confetti) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- 小遊戲邏輯 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameUI = document.getElementById('game-ui');
+            const progressBar = document.getElementById('game-progress-bar');
+            const progressText = document.getElementById('game-progress-text');
+            let progress = 0;
+            let isFireworksPlaying = false;
+
+            // 抓取網頁上所有的按鈕以及導覽列的連結
+            const clickables = document.querySelectorAll('button, nav a, nav li');
+
+            clickables.forEach(el => {
+                el.addEventListener('click', (e) => {
+                    // 如果點擊的是無效連結 (#)，阻止網頁往上跳
+                    if (el.tagName.toLowerCase() === 'a' && el.getAttribute('href') === '#') {
+                        e.preventDefault();
+                    }
+
+                    // 如果煙火正在放，就暫時不反應
+                    if (isFireworksPlaying) return;
+
+                    // 第一次點擊時，顯示進度條
+                    if (progress === 0) {
+                        gameUI.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
+                        gameUI.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+                    }
+
+                    // 隨機增加 10% ~ 20%
+                    const increment = Math.floor(Math.random() * 11) + 10;
+                    progress += increment;
+                    
+                    // 最高限制在 100%
+                    if (progress >= 100) progress = 100;
+
+                    // 更新 UI 畫面
+                    progressBar.style.width = `${progress}%`;
+                    progressText.innerText = `${progress}%`;
+
+                    // 滿 100% 時觸發煙火
+                    if (progress === 100) {
+                        isFireworksPlaying = true;
+                        
+                        // 稍微延遲一下，讓進度條跑完動畫再放煙火，感覺更流暢
+                        setTimeout(triggerFireworks, 300);
+                    }
+                });
+            });
+
+            function triggerFireworks() {
+                const duration = 5 * 1000; // 煙火持續時間 (5秒)
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                // 設定定時器連續發射煙火
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    
+                    // 從左右兩側隨機位置發射
+                    confetti({
+                        ...defaults, particleCount,
+                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                    });
+                    confetti({
+                        ...defaults, particleCount,
+                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                    });
+                }, 250);
+
+                // 煙火結束後，重置遊戲並隱藏進度條
+                setTimeout(() => {
+                    progress = 0;
+                    progressBar.style.width = '0%';
+                    progressText.innerText = '0%';
+                    isFireworksPlaying = false;
+                    
+                    // 隱藏 UI
+                    gameUI.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+                    gameUI.classList.add('opacity-0', 'translate-y-8', 'scale-95');
+                }, duration + 1500);
+            }
+        });
+    </script>
 </body>
 </html>
