@@ -501,19 +501,48 @@
     </script>
 
     <!-- Mini Game UI (彩蛋進度條) -->
-    <div id="game-ui" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-dark-card/90 backdrop-blur-md border border-brand/50 p-4 rounded-2xl shadow-[0_0_30px_rgba(39,181,168,0.3)] z-[100] w-[90%] max-w-sm transition-all duration-500 opacity-0 pointer-events-none translate-y-8 scale-95">
-        <div class="flex justify-between items-end text-xs font-bold text-gray-300 mb-2 uppercase tracking-widest">
-            <span class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Energy Level
-            </span>
-            <span id="game-progress-text" class="text-brand text-sm">0%</span>
-        </div>
-        <div class="h-2.5 w-full bg-black/50 rounded-full overflow-hidden shadow-inner">
-            <div id="game-progress-bar" class="h-full bg-brand transition-all duration-300 ease-out w-0 relative">
-                <!-- 進度條光暈特效 -->
-                <div class="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/50 blur-[2px]"></div>
+    <div id="game-ui-container" class="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center invisible">
+        <div id="game-ui" class="bg-dark-card/95 backdrop-blur-xl border-2 border-brand/60 p-8 rounded-3xl shadow-[0_0_60px_rgba(39,181,168,0.6)] w-[90%] max-w-lg transition-all duration-500 opacity-0 scale-75">
+            <div class="flex justify-between items-end text-sm font-bold text-gray-300 mb-4 uppercase tracking-widest">
+                <span class="flex items-center gap-2">
+                    <svg class="w-6 h-6 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Energy Level
+                </span>
+                <span id="game-progress-text" class="text-brand text-xl font-black">0%</span>
             </div>
+            <div class="h-4 w-full bg-black/60 rounded-full overflow-hidden shadow-inner">
+                <div id="game-progress-bar" class="h-full bg-brand transition-all duration-300 ease-out w-0 relative shadow-[0_0_10px_rgba(39,181,168,0.8)]">
+                    <!-- 進度條光暈特效 -->
+                    <div class="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white/60 blur-[3px]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Facebook Messenger 彈出視窗 -->
+    <div id="fb-messenger-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-500 opacity-0 pointer-events-none scale-95 invisible">
+        <div class="bg-dark-card border border-dark-border p-8 rounded-3xl shadow-[0_0_50px_rgba(0,132,255,0.2)] w-[90%] max-w-md relative text-center">
+            <!-- 關閉按鈕 -->
+            <button id="close-fb-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <!-- FB Messenger Icon -->
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-tr from-[#00A6FF] to-[#0068FF] rounded-full flex items-center justify-center shadow-lg">
+                <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.477 2 2 6.145 2 11.259c0 2.92 1.5 5.518 3.86 7.228v3.428c0 .546.618.86 1.063.551l3.208-2.228a10.82 10.82 0 003.869.704c5.523 0 10-4.145 10-9.259C24 6.145 19.523 2 12 2zm1.094 12.392l-2.61-2.784-5.093 2.784 5.59-5.943 2.701 2.783 5.002-2.783-5.59 5.943z"/>
+                </svg>
+            </div>
+            
+            <!-- 客製化的個人 FB 手動引導文字與標題 -->
+            <h3 class="text-xl md:text-2xl font-bold text-white mb-3">Grab your checklist!</h3>
+            <p class="text-sm text-gray-300 leading-relaxed mb-8">Click below to open Messenger, then send me the keyword <span class="text-brand font-bold">CHECKLIST</span> — I’ll send it right over instantly!</p>
+            
+            <!-- FB 個人聊天連結 -->
+            <a href="https://m.me/murray.wen" target="_blank" class="w-full bg-[#0084FF] hover:bg-[#0073E6] text-white font-bold py-4 px-6 rounded-full transition-colors flex items-center justify-center gap-3 shadow-[0_4px_14px_rgba(0,132,255,0.4)]">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.145 2 11.259c0 2.92 1.5 5.518 3.86 7.228v3.428c0 .546.618.86 1.063.551l3.208-2.228a10.82 10.82 0 003.869.704c5.523 0 10-4.145 10-9.259C24 6.145 19.523 2 12 2zm1.094 12.392l-2.61-2.784-5.093 2.784 5.59-5.943 2.701 2.783 5.002-2.783-5.59 5.943z"/></svg>
+                Get Website Optimization Checklist
+            </a>
         </div>
     </div>
 
@@ -523,11 +552,20 @@
     <!-- 小遊戲邏輯 -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const gameUIContainer = document.getElementById('game-ui-container');
             const gameUI = document.getElementById('game-ui');
             const progressBar = document.getElementById('game-progress-bar');
             const progressText = document.getElementById('game-progress-text');
+            const fbModal = document.getElementById('fb-messenger-modal');
+            const closeFbModal = document.getElementById('close-fb-modal');
             let progress = 0;
             let isFireworksPlaying = false;
+
+            // 關閉 FB Modal 邏輯 (恢復 invisible & pointer-events-none)
+            closeFbModal.addEventListener('click', () => {
+                fbModal.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100', 'visible');
+                fbModal.classList.add('opacity-0', 'pointer-events-none', 'scale-95', 'invisible');
+            });
 
             // 抓取網頁上所有的按鈕以及導覽列的連結
             const clickables = document.querySelectorAll('button, nav a, nav li');
@@ -542,10 +580,11 @@
                     // 如果煙火正在放，就暫時不反應
                     if (isFireworksPlaying) return;
 
-                    // 第一次點擊時，顯示進度條
+                    // 第一次點擊時，顯示進度條 (移除 invisible)
                     if (progress === 0) {
-                        gameUI.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
-                        gameUI.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+                        gameUIContainer.classList.remove('invisible');
+                        gameUI.classList.remove('opacity-0', 'scale-75');
+                        gameUI.classList.add('opacity-100', 'scale-100');
                     }
 
                     // 隨機增加 10% ~ 20%
@@ -578,6 +617,12 @@
                     return Math.random() * (max - min) + min;
                 }
 
+                // 煙火開始後 1.5 秒，彈出 FB Messenger 視窗 (啟用 visible & pointer-events-auto)
+                setTimeout(() => {
+                    fbModal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', 'invisible');
+                    fbModal.classList.add('opacity-100', 'pointer-events-auto', 'scale-100', 'visible');
+                }, 1500);
+
                 // 設定定時器連續發射煙火
                 const interval = setInterval(function() {
                     const timeLeft = animationEnd - Date.now();
@@ -607,8 +652,13 @@
                     isFireworksPlaying = false;
                     
                     // 隱藏 UI
-                    gameUI.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
-                    gameUI.classList.add('opacity-0', 'translate-y-8', 'scale-95');
+                    gameUI.classList.remove('opacity-100', 'scale-100');
+                    gameUI.classList.add('opacity-0', 'scale-75');
+                    
+                    // 延遲隱藏外層 Container 防止動畫不順暢
+                    setTimeout(() => {
+                        gameUIContainer.classList.add('invisible');
+                    }, 500);
                 }, duration + 1500);
             }
         });
